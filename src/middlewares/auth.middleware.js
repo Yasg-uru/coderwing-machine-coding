@@ -13,6 +13,7 @@ export const authMiddleware = async (req, res, next) =>{
         next();
 
     } catch (error) {
+        console.log("this is error ", error);
         
         res.status(500).json({
             message : "internal server error while authorizing user"

@@ -21,7 +21,7 @@ export const addProduct = async ( req  , res )=>{
 }
 export const getAllProducts = async (req, res)=>{
     try {
-        const products = await product.find({});;
+        const products = await Product.find({});;
         res.status(200).json({
             message : "all products fetched successfully",
             products
@@ -34,7 +34,7 @@ export const getAllProducts = async (req, res)=>{
 }
 export const addProductToCart= async (req , res)=>{
     try {
-        const productId = req.params.id;
+        const productId = req.body.id;
         const userId = req.user.id;
         const user= await usermodel.findById(userId);
         if(!user){
@@ -43,12 +43,13 @@ export const addProductToCart= async (req , res)=>{
             })
         }
         user.carts.push(productId);
-        req.status(200).json({
+        res.status(200).json({
             message :"product added to cart successfully"
             ,
             user
         })
     } catch (error) {
+        console.log("this is error", error)
         res.status(500).json({
             message : "internal server error while adding product to cart"
         })
