@@ -32,9 +32,11 @@ export const LoginUser = async (req, res) => {
         message: "please provider email and password",
       });
     }
-    const user = await usermodel.findOne({
-      email,
-    }).populate("carts");
+    const user = await usermodel
+      .findOne({
+        email,
+      })
+      .populate("carts");
     const isPassWordValid = await bcrypt.compare(password, user.password);
     if (!isPassWordValid) {
       return res.status(400).json({
@@ -66,7 +68,26 @@ export const LoginUser = async (req, res) => {
         user,
       });
   } catch (error) {
-    console.log('this is a error in login user ', error)
+    console.log("this is a error in login user ", error);
+    res.status(500).json({
+      message: "internal server error ",
+    });
+  }
+};
+export const checkIsAuthenticated = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await usermodel.findById(userId).populate("carts");
+    if (!user) {
+      return res.status(404).json({
+        message: "user not found",
+      });
+    }
+    res.status(200).json({
+      message: "auth checked successfully ",
+      user,
+    });
+  } catch (error) {
     res.status(500).json({
       message: "internal server error ",
     });
