@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    console.log("this is body ", req.body);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await usermodel.create({
@@ -32,7 +34,7 @@ export const LoginUser = async (req, res) => {
     }
     const user = await usermodel.findOne({
       email,
-    });
+    }).populate("carts");
     const isPassWordValid = await bcrypt.compare(password, user.password);
     if (!isPassWordValid) {
       return res.status(400).json({

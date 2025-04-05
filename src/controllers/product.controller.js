@@ -36,13 +36,15 @@ export const addProductToCart= async (req , res)=>{
     try {
         const productId = req.body.id;
         const userId = req.user.id;
-        const user= await usermodel.findById(userId);
+        const user= await usermodel.findById(userId).populate("carts");
         if(!user){
             return res.status(404).json({
                 message :"user not found "
             })
         }
         user.carts.push(productId);
+        user.save();
+        
         res.status(200).json({
             message :"product added to cart successfully"
             ,
