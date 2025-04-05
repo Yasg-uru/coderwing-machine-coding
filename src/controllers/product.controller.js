@@ -42,6 +42,15 @@ export const addProductToCart = async (req, res) => {
         message: "user not found ",
       });
     }
+    //checking if user user has already added to the cart
+    const isAlreadyAdded = user.carts.some(
+      (cart) => cart._id.toString() == productId.toString()
+    );
+    if (isAlreadyAdded) {
+      return res.status(400).json({
+        message: "already added to the cart",
+      });
+    }
     user.carts.push(productId);
     user.save();
 

@@ -13,10 +13,30 @@ export const register = async (req, res) => {
       email,
       password: hashedPassword,
     });
-    res.status(201).json({
-      message: "account created successfully",
-      user,
-    });
+    const token = jwt.sign(
+        {
+          id: user._id,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+    res
+      .cookie("token", token, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+      })
+      .status(200)
+      .json({
+        message: "Logged in Successfully",
+        token,
+        user,
+      });
+    
   } catch (error) {
     console.log("this is error ", error);
     res.status(500).json({
